@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.DTOs.User;
+using ETradeStudy.Application.Exceptions;
 using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -24,7 +25,7 @@ namespace ETradeStudy.Percistance.Services
         public async Task<CreateUserResponse> CreateAsync(CreateUser model)
         {
             AppUser appUser = _mapper.Map<AppUser>(model);
-            appUser.Id =  Guid.NewGuid().ToString();
+            appUser.Id = Guid.NewGuid().ToString();
             IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
 
             CreateUserResponse response = new() { Succeeded = result.Succeeded };
@@ -41,6 +42,19 @@ namespace ETradeStudy.Percistance.Services
             }
             return response;
 
+        }
+
+        public async Task UpdateRefreshToken(string refreshToken, AppUser appUser, DateTime accessTokenDate, int addOnAccessTokenDate)
+        {
+
+            if (appUser != null)
+            {
+                appUser.RefreshToken = refreshToken;
+                appUser.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccessTokenDate);
+                await _userManager.UpdateAsync(appUser);
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }

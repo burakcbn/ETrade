@@ -17,15 +17,17 @@ namespace ETradeStudy.Percistance.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenHandler _tokenHandler;
+        private readonly IUserService _userService;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenHandler = tokenHandler;
+            _userService = userService;
         }
 
-        public async Task<Token> LoginAsync(string usernameOrEmail, string password,int accessTokenLifeTime)
+        public async Task<Token> LoginAsync(string usernameOrEmail, string password, int accessTokenLifeTime)
         {
             AppUser appUser = await _userManager.FindByNameAsync(usernameOrEmail);
             if (appUser == null)
@@ -35,9 +37,27 @@ namespace ETradeStudy.Percistance.Services
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(appUser, password, false);
             if (result.Succeeded)
-                return _tokenHandler.CreateAcessToken(accessTokenLifeTime);
-            
-            throw new AuthenticationErrorException(); 
+            {
+                Token token = _tokenHandler.CreateAcessToken(accessTokenLifeTime);
+                await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expration, 15);
+                return token;
+            }
+            else
+                throw new AuthenticationErrorException();
+        }
+
+        public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? appUser = _userManager.Users.FirstOrDefault(u => u.RefreshToken == refreshToken);
+            if (appUser != null && appUser?.RefreshTokenEndDate > DateTime.UtcNow)
+            {
+                Token token = _tokenHandler.CreateAcessToken(15);
+                await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expration, 15);
+                return token;
+            }
+            else
+                throw new NotFoundUserException();
+
         }
     }
 }
