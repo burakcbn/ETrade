@@ -38,7 +38,7 @@ namespace ETradeStudy.Percistance.Services
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(appUser, password, false);
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAcessToken(accessTokenLifeTime);
+                Token token = _tokenHandler.CreateAcessToken(accessTokenLifeTime,appUser);
                 await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expration, 15);
                 return token;
             }
@@ -51,7 +51,7 @@ namespace ETradeStudy.Percistance.Services
             AppUser? appUser = _userManager.Users.FirstOrDefault(u => u.RefreshToken == refreshToken);
             if (appUser != null && appUser?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                Token token = _tokenHandler.CreateAcessToken(15);
+                Token token = _tokenHandler.CreateAcessToken(15,appUser);
                 await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expration, 15);
                 return token;
             }

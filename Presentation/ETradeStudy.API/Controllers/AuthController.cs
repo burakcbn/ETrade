@@ -2,8 +2,10 @@
 using ETradeStudy.Application.Features.AppUser.Commands.LoginUser;
 using ETradeStudy.Application.Features.AppUser.Commands.RefreshTokenLogin;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ETradeStudy.API.Controllers
 {
@@ -25,8 +27,8 @@ namespace ETradeStudy.API.Controllers
             LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
             return Ok(response);
         }
-        [HttpGet]
-        public async Task<IActionResult> RefreshTokenLogin([FromQuery]RefreshTokenLoginCommandRequest refreshToken)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody]RefreshTokenLoginCommandRequest refreshToken)
         {
             RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshToken);
             return Ok(response);

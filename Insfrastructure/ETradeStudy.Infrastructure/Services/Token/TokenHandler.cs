@@ -1,7 +1,9 @@
 ﻿using ETradeStudy.Application.Abstractions.Token;
+using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -16,7 +18,7 @@ namespace ETradeStudy.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public Application.DTOs.Token CreateAcessToken(int seconds)
+        public Application.DTOs.Token CreateAcessToken(int seconds, AppUser appuser)
         {
             Application.DTOs.Token token = new();
 
@@ -32,7 +34,8 @@ namespace ETradeStudy.Infrastructure.Services.Token
             issuer: _configuration["Token:Issuer"],
             expires: token.Expration,
             notBefore: DateTime.UtcNow,
-            signingCredentials: signingCredentials
+            signingCredentials: signingCredentials,
+            claims: new List<Claim> { new(ClaimTypes.Name, appuser.UserName) }
             );
 
             JwtSecurityTokenHandler tokenHandler = new();

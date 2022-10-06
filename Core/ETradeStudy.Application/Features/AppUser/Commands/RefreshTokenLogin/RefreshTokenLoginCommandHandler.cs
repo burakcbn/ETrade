@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using ETradeStudy.Application.Abstractions.Services;
+using ETradeStudy.Application.DTOs;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,20 @@ namespace ETradeStudy.Application.Features.AppUser.Commands.RefreshTokenLogin
 {
     public class RefreshTokenLoginCommandHandler : IRequestHandler<RefreshTokenLoginCommandRequest, RefreshTokenLoginCommandResponse>
     {
-        public Task<RefreshTokenLoginCommandResponse> Handle(RefreshTokenLoginCommandRequest request, CancellationToken cancellationToken)
+        private readonly IAuthService _authService;
+
+        public RefreshTokenLoginCommandHandler(IAuthService authService)
         {
-            throw new NotImplementedException();
+            _authService = authService;
+        }
+
+        public async Task<RefreshTokenLoginCommandResponse> Handle(RefreshTokenLoginCommandRequest request, CancellationToken cancellationToken)
+        {
+            Token token= await _authService.RefreshTokenLoginAsync(request.RefreshToken);
+            return new()
+            {
+                Token = token
+            };
         }
     }
 }

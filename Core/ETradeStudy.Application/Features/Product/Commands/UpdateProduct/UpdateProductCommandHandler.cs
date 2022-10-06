@@ -1,5 +1,6 @@
 ﻿using ETradeStudy.Application.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace ETradeStudy.Application.Features.Product.Commands.UpdateProduct
     {
         private readonly IProductRead _productRead;
         private readonly IProductWrite _productWrite;
+        private readonly ILogger<UpdateProductCommandHandler> _logger;
 
-        public UpdateProductCommandHandler(IProductRead productRead, IProductWrite productWrite)
+        public UpdateProductCommandHandler(IProductRead productRead, IProductWrite productWrite, ILogger<UpdateProductCommandHandler> logger)
         {
             _productRead = productRead;
             _productWrite = productWrite;
+            _logger = logger;
         }
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
@@ -26,6 +29,7 @@ namespace ETradeStudy.Application.Features.Product.Commands.UpdateProduct
             product.Price = request.Price;
             _productWrite.Update(product);
             await _productWrite.SaveAsync();
+            _logger.LogInformation("Product Güncellendi...");
             return new();
         }
     }

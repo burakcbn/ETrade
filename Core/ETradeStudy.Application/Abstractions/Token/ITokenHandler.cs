@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ETradeStudy.Domain.Entities.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace ETradeStudy.Application.Abstractions.Token
 {
     public interface ITokenHandler
     {
-        DTOs.Token CreateAcessToken(int seconds);
+        DTOs.Token CreateAcessToken(int seconds,AppUser appUser);
         string CreateRefreshToken();
     }
 }

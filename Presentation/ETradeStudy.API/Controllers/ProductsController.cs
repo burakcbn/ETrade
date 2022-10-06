@@ -19,17 +19,19 @@ namespace ETradeStudy.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IMediator mediator)
+        public ProductsController(IMediator mediator, ILogger<ProductsController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)
         {
             GetAllProductQueryResponse response = await _mediator.Send(getAllProductQueryRequest);
