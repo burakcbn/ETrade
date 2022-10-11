@@ -12,6 +12,12 @@ namespace ETradeStudy.Application.Validatiors.Product
     {
         public CreateProductValidator()
         {
+
+            RuleFor(p => p.ProductName).NotEmpty().NotNull().
+            WithMessage("İsim bilgisi boş geçilemez");
+            RuleFor(p => p.ProductName).Length(2)
+                .WithMessage("Ürün adı 2 karakterden uzun olmalı");
+
             RuleFor(p => p.Price).NotEmpty().NotNull().
             WithMessage("Ücret bilgisi boş geçilemez")
             .Must(p => p > 0).

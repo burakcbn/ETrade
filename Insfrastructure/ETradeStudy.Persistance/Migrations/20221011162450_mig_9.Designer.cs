@@ -3,6 +3,7 @@ using System;
 using ETradeStudy.Percistance.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ETradeStudy.Percistance.Migrations
 {
     [DbContext(typeof(ETradeStudyContext))]
-    partial class ETradeStudyContextModelSnapshot : ModelSnapshot
+    [Migration("20221011162450_mig_9")]
+    partial class mig_9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

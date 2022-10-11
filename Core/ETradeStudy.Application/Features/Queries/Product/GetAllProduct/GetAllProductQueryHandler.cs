@@ -24,7 +24,7 @@ namespace ETradeStudy.Application.Features.Queries.Product.GetAllProduct
         {
             _logger.LogInformation("Get all products");
             var count = _productRead.GetAll(false).Count();
-            var products = _productRead.GetAll(false).Skip(request.Page * request.Size).Take(request.Size).Select(p => new { p.Id, p.Price, p.Stock, p.CreatedDate, p.UpdateDate });
+            var products = _productRead.GetAll(false).Skip(request.Page * request.Size).Take(request.Size).Select(p => new { p.Id,p.ProductName, p.Price, p.Stock, p.CreatedDate, p.UpdateDate });
             
             return new()
             {

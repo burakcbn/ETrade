@@ -9,6 +9,7 @@ namespace ETradeStudy.Application.Features.Product.Commands.CreateProduct
 {
     public class CreateProductCommandRequest : IRequest<CreateProductCommandResponse>
     {
+        public string ProductName { get; set; }
         public int Stock { get; set; }
         public long Price { get; set; }
 

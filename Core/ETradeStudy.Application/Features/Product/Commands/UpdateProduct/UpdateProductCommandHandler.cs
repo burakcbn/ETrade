@@ -26,6 +26,7 @@ namespace ETradeStudy.Application.Features.Product.Commands.UpdateProduct
         {
             Domain.Entities.Product product = await _productRead.GetByIdAsync(request.Id);
             product.Stock = request.Stock;
+            product.ProductName= request.ProductName;
             product.Price = request.Price;
             _productWrite.Update(product);
             await _productWrite.SaveAsync();

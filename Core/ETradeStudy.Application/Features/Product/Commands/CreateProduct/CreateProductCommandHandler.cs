@@ -24,7 +24,7 @@ namespace ETradeStudy.Application.Features.Product.Commands.CreateProduct
         public async Task<CreateProductCommandResponse> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
 
-            await _productWrite.AddAsync(new() { Price = request.Price, Stock = request.Stock });
+            await _productWrite.AddAsync(new() {ProductName=request.ProductName, Price = request.Price, Stock = request.Stock });
             await _productWrite.SaveAsync();
             await _productHubService.ProductAddedMessageAsync("Ürün eklendi");
             return new();
