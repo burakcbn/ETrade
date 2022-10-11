@@ -24,7 +24,7 @@ namespace ETradeStudy.Application.Features.AppUser.Commands.LoginUser
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            Token token = await _ınternalAuthentication.LoginAsync(request.UserNameOrEmail, request.Password,15);
+            Token token = await _ınternalAuthentication.LoginAsync(request.UserNameOrEmail, request.Password,900);
 
             return new LoginUserSuccessCommandResponse()
             {

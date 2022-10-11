@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ETradeStudy.Application\ETradeStudy.Application.csproj" />
+    <ProjectReference Include="..\..\Insfrastructure\ETradeAPI.SignalR\ETradeAPI.SignalR.csproj" />
     <ProjectReference Include="..\..\Insfrastructure\ETradeStudy.Infrastructure\ETradeStudy.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Insfrastructure\ETradeStudy.Persistance\ETradeStudy.Percistance.csproj" />
   </ItemGroup>

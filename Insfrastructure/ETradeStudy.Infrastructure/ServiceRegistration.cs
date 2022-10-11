@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ETradeStudy.Infrastructure
 {
-    public static class ServiceRegistiration
+    public static class ServiceRegistration
     {
         public static void AddInfrastructureServices(this IServiceCollection services)
         {

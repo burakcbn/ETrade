@@ -1,8 +1,9 @@
+using ETradeAPI.SignalR;
 using ETradeStudy.API.Configurations.ColumnWriters;
+using ETradeStudy.API.Extensions;
 using ETradeStudy.Application;
 using ETradeStudy.Application.Validatiors.Product;
 using ETradeStudy.Infrastructure;
-using ETradeStudy.Infrastructure.Enums;
 using ETradeStudy.Infrastructure.Filters;
 using ETradeStudy.Infrastructure.Services.Storage.Local;
 using ETradeStudy.Percistance;
@@ -20,8 +21,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 builder.Services.AddInfrastructureServices();
+builder.Services.AddSignalRServices();
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistanceServices();
 builder.Services.AddStorage<LocalStorage>();
@@ -40,10 +42,10 @@ Logger log = new LoggerConfiguration()
             {"level", new LevelColumnWriter()},
             {"time_stamp", new TimestampColumnWriter()},
             {"exception", new ExceptionColumnWriter()},
-             {"log_event", new LogEventSerializedColumnWriter()},
+            {"log_event", new LogEventSerializedColumnWriter()},
             {"user_name", new UsernameColumnWriter()}
         })
-    
+
     .Enrich.FromLogContext()
     .MinimumLevel.Information()
     .CreateLogger();
@@ -96,6 +98,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler(app.Services.GetRequiredService<ILogger<Program>>());
+
 app.UseSerilogRequestLogging();
 app.UseHttpLogging();
 
@@ -113,5 +117,5 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
-
+app.MapHubs();
 app.Run();
