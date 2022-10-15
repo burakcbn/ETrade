@@ -1,5 +1,4 @@
-﻿using ETradeStudy.Application.Features.AppUser.Commands.CreateUser;
-using ETradeStudy.Application.Features.AppUser.Commands.LoginUser;
+﻿using ETradeStudy.Application.Features.Commands.AppUser.CreateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

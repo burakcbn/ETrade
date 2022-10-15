@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using ETradeStudy.Application.Features.AppUser.Commands.LoginUser;
-using ETradeStudy.Application.Features.AppUser.Commands.RefreshTokenLogin;
+﻿using ETradeStudy.Application.Features.Commands.AppUser.LoginUser;
+using ETradeStudy.Application.Features.Commands.AppUser.RefreshTokenLogin;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ETradeStudy.Application.DTOs.User;
-using ETradeStudy.Application.Features.AppUser.Commands.CreateUser;
-using Appuser = ETradeStudy.Domain.Entities.Identity.AppUser;
+using ETradeStudy.Application.Features.Commands.AppUser.CreateUser;
 
 namespace ETradeStudy.Application.Features.Profiles
 {

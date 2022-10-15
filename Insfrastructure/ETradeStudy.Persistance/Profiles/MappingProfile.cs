@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ETradeStudy.Application.DTOs.User;
-using ETradeStudy.Application.Features.AppUser.Commands.CreateUser;
 using ETradeStudy.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;

@@ -1,8 +1,7 @@
 ﻿using ETradeStudy.Application.Abstractions;
-using ETradeStudy.Application.Abstractions.Storage;
-using ETradeStudy.Application.Features.Product.Commands.CreateProduct;
-using ETradeStudy.Application.Features.Product.Commands.RemoveProduct;
-using ETradeStudy.Application.Features.Product.Commands.UpdateProduct;
+using ETradeStudy.Application.Features.Commands.Product.CreateProduct;
+using ETradeStudy.Application.Features.Commands.Product.RemoveProduct;
+using ETradeStudy.Application.Features.Commands.Product.UpdateProduct;
 using ETradeStudy.Application.Features.Queries.Product.GetAllProduct;
 using ETradeStudy.Application.Features.Queries.Product.GetByIdProduct;
 using ETradeStudy.Application.Repositories;
@@ -23,11 +22,15 @@ namespace ETradeStudy.API.Controllers
     {
         private readonly IMediator _mediator;
         readonly ILogger<ProductsController> _logger;
+        readonly IStorageService _storageService;
+        readonly IProductImageFileWrite _productImageFileWrite;
 
-        public ProductsController(IMediator mediator, ILogger<ProductsController> logger)
+        public ProductsController(IMediator mediator, ILogger<ProductsController> logger, IStorageService storageService, IProductImageFileWrite productImageFileWrite)
         {
             _mediator = mediator;
             _logger = logger;
+            _storageService = storageService;
+            _productImageFileWrite = productImageFileWrite;
         }
 
         [HttpGet]
@@ -62,14 +65,15 @@ namespace ETradeStudy.API.Controllers
         }
 
         //[HttpPost("[action]")]
-        //public async Task<IActionResult> Upload([FromQuery] string id)
+        //public async Task<IActionResult> upload([FromQuery] string id)
         //{
+
         //    var data = Request.Form.Files;
-        //    List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("resource/products-images", Request.Form.Files);
+        //    List<(string filename, string pathorcontainername)> result = await _storageService.UploadAsync("resource/products-images", Request.Form.Files);
         //    await _productImageFileWrite.AddRangeAsync(result.Select(p => new ProductImageFile()
         //    {
-        //        FileName = p.fileName,
-        //        Path = p.pathOrContainerName,
+        //        FileName = p.filename,
+        //        Path = p.pathorcontainername,
         //        Storage = _storageService.StorageName,
         //    }).ToList());
         //    return Ok();

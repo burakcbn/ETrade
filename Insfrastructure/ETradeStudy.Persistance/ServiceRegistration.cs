@@ -1,9 +1,13 @@
 ﻿using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.Abstractions.Services.Authentication;
 using ETradeStudy.Application.Repositories;
+using ETradeStudy.Application.Repositories.Basket;
+using ETradeStudy.Application.Repositories.BasketItem;
 using ETradeStudy.Domain.Entities.Identity;
 using ETradeStudy.Percistance.Contexts;
 using ETradeStudy.Percistance.Repositories;
+using ETradeStudy.Percistance.Repositories.Basket;
+using ETradeStudy.Percistance.Repositories.BasketItem;
 using ETradeStudy.Percistance.Repositories.File;
 using ETradeStudy.Percistance.Repositories.ProductImage;
 using ETradeStudy.Percistance.Services;
@@ -47,6 +51,17 @@ namespace ETradeStudy.Percistance
             services.AddSingleton<IFileWrite, FileWrite>();
 
 
+            services.AddSingleton<IBasketRead, BasketRead>();
+            services.AddSingleton<IBasketWrite, BasketWrite>();
+
+
+            services.AddSingleton<IOrderRead, OrderRead>();
+            services.AddSingleton<IOrderWrite, OrderWrite>();
+
+            services.AddSingleton<IBasketItemRead, BasketItemRead>();
+            services.AddSingleton<IBasketItemWrite, BasketItemWrite>();
+
+
             services.AddSingleton<IProductImageFileRead, ProdutImageFileRead>();
             services.AddSingleton<IProductImageFileWrite, ProductImageFileWrite>();
 
@@ -54,10 +69,13 @@ namespace ETradeStudy.Percistance
             services.AddSingleton<IInvoceFileRead, InvoiceFileRead>();
             services.AddSingleton<IInvoiceFileWrite, InvoiceFileWrite>();
 
+            services.AddScoped<IBasketService, BasketService>();
+
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAuthService,AuthService>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();
-            services.AddScoped<IExternalAuthentication,AuthService>();
+            services.AddScoped<IExternalAuthentication, AuthService>();
+
         }
     }
 }

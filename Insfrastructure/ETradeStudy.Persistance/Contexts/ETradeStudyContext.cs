@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ETradeStudy.Percistance.Contexts
 {
-    public class ETradeStudyContext : IdentityDbContext<AppUser,AppRole,string>
+    public class ETradeStudyContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public ETradeStudyContext(DbContextOptions options) : base(options)
         {
@@ -22,11 +22,32 @@ namespace ETradeStudy.Percistance.Contexts
         {
             optionsBuilder.UseNpgsql(User ID=root;Password=myPassword;Host=localhost;Port=5432;Database=myDataBase;);
         }*/
-        public DbSet<Product> Products{ get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<Domain.Entities.File> Files{ get; set; }
-        public DbSet<ProductImageFile> ProductImages{ get; set; }
-        public DbSet<InvoiceFile>InvoiceFiles { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Domain.Entities.File> Files { get; set; }
+        public DbSet<ProductImageFile> ProductImageFiles { get; set; }
+        public DbSet<InvoiceFile> InvoiceFiles { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
+        public DbSet<BasketItem> BasketItems { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Order>()
+             .HasKey(b => b.Id);
+
+            builder.Entity<Order>()
+                .HasIndex(o => o.OrderCode)
+                .IsUnique();
+
+            builder.Entity<Basket>()
+                .HasOne(b => b.Order)
+                .WithOne(o => o.Basket)
+                .HasForeignKey<Order>(b => b.Id);
+
+            base.OnModelCreating(builder);
+        }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var results = ChangeTracker.Entries<BaseEntity>();

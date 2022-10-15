@@ -11,6 +11,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using NpgsqlTypes;
 using Serilog;
 using Serilog.Context;
@@ -22,6 +23,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddSignalRServices();
 builder.Services.AddApplicationServices();
@@ -60,6 +62,7 @@ builder.Services.AddHttpLogging(logging =>
     logging.RequestBodyLogLimit = 4096;
     logging.ResponseBodyLogLimit = 4096;
 });
+
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()).
     AddFluentValidation(options => options.
     RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).
@@ -88,6 +91,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
              NameClaimType = ClaimTypes.Name
          };
      });
+
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description =
+            "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345.54321\""
+    });
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+                { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
+            new string[] { }
+        }
+    });
+});
 
 var app = builder.Build();
 

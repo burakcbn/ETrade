@@ -16,6 +16,7 @@ namespace ETradeStudy.Application
         {
             services.AddMediatR(typeof(ServiceRegistration));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         }
     }
 }
