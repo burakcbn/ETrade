@@ -3,6 +3,7 @@ using ETradeStudy.Application.Features.Commands.Basket.RemoveBasketItem;
 using ETradeStudy.Application.Features.Commands.Basket.UpdateQuantity;
 using ETradeStudy.Application.Features.Queries.Basket.GetBasketItems;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace ETradeStudy.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes ="Admin")]
     public class BasketsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,7 +22,7 @@ namespace ETradeStudy.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBasketItems(GetBasketItemsQueryRequest getBasketItemsQueryRequest)
+        public async Task<IActionResult> GetBasketItems([FromQuery]GetBasketItemsQueryRequest getBasketItemsQueryRequest)
         {
             List<GetBasketItemsQueryResponse> response = await _mediator.Send(getBasketItemsQueryRequest);
             return Ok(response);

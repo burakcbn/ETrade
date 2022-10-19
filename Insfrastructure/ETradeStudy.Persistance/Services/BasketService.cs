@@ -26,6 +26,15 @@ namespace ETradeStudy.Percistance.Services
         private readonly IBasketRead _basketRead;
         private readonly IBasketItemWrite _basketItemWrite;
         private readonly IBasketItemRead _basketItemRead;
+
+        public Basket? GetUserActiveBasket
+        {
+            get
+            {
+                return ContextUser().Result;
+            }
+        }
+
         public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderRead orderRead, IBasketWrite basketWrite, IBasketItemWrite basketItemWrite, IBasketItemRead basketItemRead, IBasketRead basketRead)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -115,11 +124,12 @@ namespace ETradeStudy.Percistance.Services
         public async Task UpdateQuantityAsync(VM_Update_BasketItem basketItem)
         {
             BasketItem _basketItem = await _basketItemRead.GetByIdAsync(basketItem.BasketItemId);
-            if (_basketItem!=null)
+            if (_basketItem != null)
             {
-                _basketItem.Quantity= basketItem.Quantity;
+                _basketItem.Quantity = basketItem.Quantity;
                 await _basketItemWrite.SaveAsync();
             }
         }
+
     }
 }

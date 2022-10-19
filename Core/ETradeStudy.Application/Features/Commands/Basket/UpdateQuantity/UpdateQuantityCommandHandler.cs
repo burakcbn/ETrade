@@ -17,9 +17,9 @@ namespace ETradeStudy.Application.Features.Commands.Basket.UpdateQuantity
             _basketService = basketService;
         }
 
-        public Task<UpdateQuantityCommandResponse> Handle(UpdateQuantityCommandRequest request, CancellationToken cancellationToken)
+        public async Task<UpdateQuantityCommandResponse> Handle(UpdateQuantityCommandRequest request, CancellationToken cancellationToken)
         {
-            _basketService.UpdateQuantityAsync(new()
+            await _basketService.UpdateQuantityAsync(new()
             {
                 BasketItemId = request.BasketItemId,
                 Quantity = request.Quantity,

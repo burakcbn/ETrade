@@ -76,6 +76,8 @@ namespace ETradeStudy.Percistance
             services.AddScoped<IInternalAuthentication, AuthService>();
             services.AddScoped<IExternalAuthentication, AuthService>();
 
+            services.AddScoped<IOrderService, OrderService>();
+
         }
     }
 }
