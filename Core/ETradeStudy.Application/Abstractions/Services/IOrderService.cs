@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace ETradeStudy.Application.Abstractions.Services
 {
-    public  interface IOrderService
+    public interface IOrderService
     {
+        Task<ListOrderDto> GetAllOrdersAsync(int page,int size);
         Task CreateOrderAsync(CreateOrderDto createOrder);
     }
 }
