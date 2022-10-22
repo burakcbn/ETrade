@@ -1,5 +1,7 @@
 ﻿using ETradeStudy.Application.Features.Commands.AppUser.LoginUser;
+using ETradeStudy.Application.Features.Commands.AppUser.PasswordReset;
 using ETradeStudy.Application.Features.Commands.AppUser.RefreshTokenLogin;
+using ETradeStudy.Application.Features.Commands.AppUser.VerifyResetToken;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +18,7 @@ namespace ETradeStudy.API.Controllers
         private readonly IMediator _mediator;
 
         public AuthController(IMediator mediator)
-        {            
+        {
             _mediator = mediator;
         }
 
@@ -27,9 +29,21 @@ namespace ETradeStudy.API.Controllers
             return Ok(response);
         }
         [HttpPost("[action]")]
-        public async Task<IActionResult> RefreshTokenLogin([FromBody]RefreshTokenLoginCommandRequest refreshToken)
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginCommandRequest refreshToken)
         {
             RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshToken);
+            return Ok(response);
+        }
+        [HttpPost("password-reset")]
+        public async Task<IActionResult> PasswordReset([FromBody] PasswordResetCommandRequest passwordResetCommandRequest)
+        {
+            PasswordResetCommandResponse response = await _mediator.Send(passwordResetCommandRequest);
+            return Ok(response);
+        }
+        [HttpPost("verify-reset-token")]
+        public async Task<IActionResult> VerifyResetToken([FromBody] VerifyResetTokenCommandRequest verifyResetTokenCommandRequest)
+        {
+            VerifyResetTokenCommandResponse response = await _mediator.Send(verifyResetTokenCommandRequest);
             return Ok(response);
         }
 

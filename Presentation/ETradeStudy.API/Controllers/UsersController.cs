@@ -1,4 +1,5 @@
 ﻿using ETradeStudy.Application.Features.Commands.AppUser.CreateUser;
+using ETradeStudy.Application.Features.Commands.AppUser.UpdatePassword;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,11 @@ namespace ETradeStudy.API.Controllers
             return Ok(response);
         }
 
-    
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordCommandRequest updatePasswordCommandRequest)
+        {
+            UpdatePasswordCommandResponse response = await _mediator.Send(updatePasswordCommandRequest);
+            return Ok(response);
+        }
     }
 }

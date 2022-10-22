@@ -1,6 +1,7 @@
 ﻿using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.DTOs.Order;
 using ETradeStudy.Application.Repositories;
+using ETradeStudy.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -48,14 +49,42 @@ namespace ETradeStudy.Percistance.Services
                 Count = await result.CountAsync(),
                 Orders = data.Select(o => new
                 {
+                    Id = o.Id,
                     CreatedDate = o.CreatedDate,
                     OrderCode = o.OrderCode,
                     TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
-                    UserName=o.Basket.User.UserName,
+                    UserName = o.Basket.User.UserName,
                 })
             };
 
-        //Take((page*size)..size)
+            //Take((page*size)..size)
+        }
+
+        public async Task<SingleOrder> GetOrderByIdAsync(string id)
+        {
+            var query = await _orderRead.Table
+                .Include(o => o.Basket)
+                    .ThenInclude(o => o.BasketItems)
+                        .ThenInclude(bi => bi.Product)
+                            .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+            if (query != null)
+            {
+                return new SingleOrder()
+                {
+                    Id = query.Id.ToString(),
+                    Address = query.Address,
+                    BasketItems = query.Basket.BasketItems.Select(bi => new
+                    {
+                        bi.Product.ProductName,
+                        bi.Product.Price,
+                        bi.Quantity
+                    }),
+                    CreatedDate = query.CreatedDate,
+                    Description = query.Description,
+                    OrderCode = query.OrderCode,
+                };
+            }
+            return new();
         }
     }
 }

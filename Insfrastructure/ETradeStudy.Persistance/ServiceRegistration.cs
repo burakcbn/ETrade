@@ -11,6 +11,7 @@ using ETradeStudy.Percistance.Repositories.BasketItem;
 using ETradeStudy.Percistance.Repositories.File;
 using ETradeStudy.Percistance.Repositories.ProductImage;
 using ETradeStudy.Percistance.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -35,7 +36,8 @@ namespace ETradeStudy.Percistance
                  options.Password.RequireDigit = false;
                  options.Password.RequireLowercase = false;
                  options.Password.RequireUppercase = false;
-             }).AddEntityFrameworkStores<ETradeStudyContext>();
+             }).AddEntityFrameworkStores<ETradeStudyContext>()
+             .AddDefaultTokenProviders();
 
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

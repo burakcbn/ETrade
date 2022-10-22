@@ -2,8 +2,10 @@
 using ETradeStudy.Application.Abstractions.Token;
 using ETradeStudy.Application.DTOs;
 using ETradeStudy.Application.Exceptions;
+using ETradeStudy.Application.Helpers;
 using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +20,15 @@ namespace ETradeStudy.Percistance.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenHandler _tokenHandler;
         private readonly IUserService _userService;
+        private readonly IMailService _mailService;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService, IMailService mailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenHandler = tokenHandler;
             _userService = userService;
+            _mailService = mailService;
         }
 
         public async Task<Token> LoginAsync(string usernameOrEmail, string password, int accessTokenLifeTime)
@@ -38,8 +42,8 @@ namespace ETradeStudy.Percistance.Services
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(appUser, password, false);
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAcessToken(accessTokenLifeTime,appUser);
-                await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expration, 15);
+                Token token = _tokenHandler.CreateAcessToken(accessTokenLifeTime, appUser);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, appUser, token.Expration, 15);
                 return token;
             }
             else
@@ -51,13 +55,35 @@ namespace ETradeStudy.Percistance.Services
             AppUser? appUser = _userManager.Users.FirstOrDefault(u => u.RefreshToken == refreshToken);
             if (appUser != null && appUser?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                Token token = _tokenHandler.CreateAcessToken(15,appUser);
-                await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expration, 15);
+                Token token = _tokenHandler.CreateAcessToken(15, appUser);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, appUser, token.Expration, 15);
                 return token;
             }
             else
                 throw new NotFoundUserException();
 
         }
+        public async Task PasswordResetAsync(string email)
+        {
+            AppUser user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                resetToken = resetToken.UrlEncode();
+                await _mailService.SendPasswordResetMailAsync(user.Email, user.Id, resetToken);
+            }
+        }
+
+        public async Task<bool> VerifyResetTokenAsync(string resetToken, string userId)
+        {
+            AppUser appUser = await _userManager.FindByIdAsync(userId);
+            if (appUser != null)
+            {
+                resetToken = resetToken.UrlDecode();
+                return await _userManager.VerifyUserTokenAsync(appUser, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
+            }
+            return false;
+        }
+
     }
 }

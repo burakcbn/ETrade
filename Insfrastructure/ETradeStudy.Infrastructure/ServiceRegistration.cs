@@ -1,4 +1,5 @@
 ﻿using ETradeStudy.Application.Abstractions;
+using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.Abstractions.Storage;
 using ETradeStudy.Application.Abstractions.Token;
 using ETradeStudy.Infrastructure.Enums;
@@ -21,6 +22,7 @@ namespace ETradeStudy.Infrastructure
         {
             services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<ITokenHandler, TokenHandler>();
+            services.AddScoped<IMailService, MailService>();
         }
         public static void AddStorage<T>(this IServiceCollection services) where T : Storage, IStorage
         {

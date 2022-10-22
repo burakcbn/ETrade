@@ -2,6 +2,7 @@
 using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.DTOs.User;
 using ETradeStudy.Application.Exceptions;
+using ETradeStudy.Application.Helpers;
 using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -44,7 +45,21 @@ namespace ETradeStudy.Percistance.Services
 
         }
 
-        public async Task UpdateRefreshToken(string refreshToken, AppUser appUser, DateTime accessTokenDate, int addOnAccessTokenDate)
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        {
+            AppUser appUser= await _userManager.FindByIdAsync(userId);
+            if (appUser!=null)
+            {
+                resetToken= resetToken.UrlDecode();
+                IdentityResult result= await _userManager.ResetPasswordAsync(appUser, resetToken, newPassword);
+                if (result.Succeeded)
+                    await _userManager.UpdateSecurityStampAsync(appUser);
+                else
+                    throw new PasswordChangeFailedException();
+            }
+        }
+
+        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser appUser, DateTime accessTokenDate, int addOnAccessTokenDate)
         {
 
             if (appUser != null)
