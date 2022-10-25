@@ -3,11 +3,13 @@ using ETradeStudy.Application.Abstractions.Services.Authentication;
 using ETradeStudy.Application.Repositories;
 using ETradeStudy.Application.Repositories.Basket;
 using ETradeStudy.Application.Repositories.BasketItem;
+using ETradeStudy.Application.Repositories.CompletedOrder;
 using ETradeStudy.Domain.Entities.Identity;
 using ETradeStudy.Percistance.Contexts;
 using ETradeStudy.Percistance.Repositories;
 using ETradeStudy.Percistance.Repositories.Basket;
 using ETradeStudy.Percistance.Repositories.BasketItem;
+using ETradeStudy.Percistance.Repositories.CompletedOrder;
 using ETradeStudy.Percistance.Repositories.File;
 using ETradeStudy.Percistance.Repositories.ProductImage;
 using ETradeStudy.Percistance.Services;
@@ -56,6 +58,9 @@ namespace ETradeStudy.Percistance
             services.AddSingleton<IBasketRead, BasketRead>();
             services.AddSingleton<IBasketWrite, BasketWrite>();
 
+
+            services.AddSingleton<ICompletedOrderRead, CompletedOrderRead>();
+            services.AddSingleton<ICompletedOrderWrite, CompletedOrderWrite>();
 
             services.AddSingleton<IOrderRead, OrderRead>();
             services.AddSingleton<IOrderWrite, OrderWrite>();

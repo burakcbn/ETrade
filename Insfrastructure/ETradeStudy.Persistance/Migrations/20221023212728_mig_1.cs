@@ -281,6 +281,26 @@ namespace ETradeStudy.Percistance.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CompletedOrders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompletedOrders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompletedOrders_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -334,6 +354,12 @@ namespace ETradeStudy.Percistance.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CompletedOrders_OrderId",
+                table: "CompletedOrders",
+                column: "OrderId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Files_ProductId",
                 table: "Files",
                 column: "ProductId");
@@ -366,16 +392,19 @@ namespace ETradeStudy.Percistance.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
+                name: "CompletedOrders");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Files");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");

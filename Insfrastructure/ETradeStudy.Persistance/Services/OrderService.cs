@@ -1,6 +1,7 @@
 ﻿using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.DTOs.Order;
 using ETradeStudy.Application.Repositories;
+using ETradeStudy.Application.Repositories.CompletedOrder;
 using ETradeStudy.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,11 +16,37 @@ namespace ETradeStudy.Percistance.Services
     {
         private readonly IOrderWrite _orderWrite;
         private readonly IOrderRead _orderRead;
+        private readonly ICompletedOrderWrite _completedOrderWrite;
+        private readonly ICompletedOrderRead _completedOrderRead;
 
-        public OrderService(IOrderWrite orderWrite, IOrderRead orderRead)
+        public OrderService(IOrderWrite orderWrite, IOrderRead orderRead, ICompletedOrderWrite completedOrderWrite, ICompletedOrderRead completedOrderRead)
         {
             _orderWrite = orderWrite;
             _orderRead = orderRead;
+            _completedOrderWrite = completedOrderWrite;
+            _completedOrderRead = completedOrderRead;
+        }
+
+        public async Task<(bool, CompletedOrderDto)> CompleteOrderAsync(string id)
+        {
+            Order? order = await _orderRead.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.User).FirstOrDefaultAsync(o=>o.Id==Guid.Parse(id));
+            if (order != null)
+            {
+                await _completedOrderWrite.AddAsync(new()
+                {
+                    OrderId = Guid.Parse(id)
+                });
+                return (await _completedOrderWrite.SaveAsync() > 0, new()
+                {
+                    OrderCode = order.OrderCode,
+                    OrderDate = order.CreatedDate,
+                    UserName = order.Basket.User.UserName,
+                    Email= order.Basket.User.Email,
+                });
+            }
+            return (false,null);
         }
 
         public async Task CreateOrderAsync(CreateOrderDto createOrder)
@@ -37,24 +64,42 @@ namespace ETradeStudy.Percistance.Services
 
         public async Task<ListOrderDto> GetAllOrdersAsync(int page, int size)
         {
-            var result = _orderRead.Table.
-                   Include(o => o.Basket).
-                   ThenInclude(b => b.User).
-                   Include(o => o.Basket).
-                   ThenInclude(o => o.BasketItems).
-                   ThenInclude(o => o.Product);
-            var data = result.Skip(page * size).Take(size);
+            var query = _orderRead.Table.Include(o => o.Basket)
+                   .ThenInclude(b => b.User)
+                   .Include(o => o.Basket)
+                      .ThenInclude(b => b.BasketItems)
+                      .ThenInclude(bi => bi.Product);
+
+
+
+            var data = query.Skip(page * size).Take(size);
+            /*.Take((page * size)..size);*/
+
+            var data2 = from order in data
+                        join completedOrder in _completedOrderRead.Table
+                           on order.Id equals completedOrder.OrderId into co
+                        from _co in co.DefaultIfEmpty()
+                        select new
+                        {
+                            Id = order.Id,
+                            CreatedDate = order.CreatedDate,
+                            OrderCode = order.OrderCode,
+                            Basket = order.Basket,
+                            Completed = _co != null ? true : false
+                        };
+
             return new()
             {
-                Count = await result.CountAsync(),
-                Orders = data.Select(o => new
+                Count = await query.CountAsync(),
+                Orders = await data2.Select(o => new
                 {
                     Id = o.Id,
                     CreatedDate = o.CreatedDate,
                     OrderCode = o.OrderCode,
                     TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
                     UserName = o.Basket.User.UserName,
-                })
+                    o.Completed
+                }).ToListAsync()
             };
 
             //Take((page*size)..size)

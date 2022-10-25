@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ETradeStudy.Percistance.Migrations
 {
     [DbContext(typeof(ETradeStudyContext))]
-    [Migration("20221013194746_mig_1")]
+    [Migration("20221023212728_mig_1")]
     partial class mig_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,29 @@ namespace ETradeStudy.Percistance.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("BasketItems");
+                });
+
+            modelBuilder.Entity("ETradeStudy.Domain.Entities.CompletedOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("CompletedOrders");
                 });
 
             modelBuilder.Entity("ETradeStudy.Domain.Entities.Customer", b =>
@@ -446,6 +469,17 @@ namespace ETradeStudy.Percistance.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ETradeStudy.Domain.Entities.CompletedOrder", b =>
+                {
+                    b.HasOne("ETradeStudy.Domain.Entities.Order", "Order")
+                        .WithOne("CompletedOrder")
+                        .HasForeignKey("ETradeStudy.Domain.Entities.CompletedOrder", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("ETradeStudy.Domain.Entities.Order", b =>
                 {
                     b.HasOne("ETradeStudy.Domain.Entities.Basket", "Basket")
@@ -526,6 +560,12 @@ namespace ETradeStudy.Percistance.Migrations
             modelBuilder.Entity("ETradeStudy.Domain.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("Baskets");
+                });
+
+            modelBuilder.Entity("ETradeStudy.Domain.Entities.Order", b =>
+                {
+                    b.Navigation("CompletedOrder")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETradeStudy.Domain.Entities.Product", b =>

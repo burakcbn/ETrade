@@ -11,6 +11,7 @@ namespace ETradeStudy.Application.Abstractions.Services
     {
         Task<ListOrderDto> GetAllOrdersAsync(int page,int size);
         Task<SingleOrder> GetOrderByIdAsync(string id);
+        Task<(bool, CompletedOrderDto)> CompleteOrderAsync(string id);
         Task CreateOrderAsync(CreateOrderDto createOrder);
     }
 }

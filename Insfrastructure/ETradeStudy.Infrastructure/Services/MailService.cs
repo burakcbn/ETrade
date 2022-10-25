@@ -42,7 +42,7 @@ namespace ETradeStudy.Infrastructure.Services
             await smtpClient.SendMailAsync(mail);
         }
 
-        public async Task SendPasswordResetMailAsync(string to,string userId,string resetToken)
+        public async Task SendPasswordResetMailAsync(string to, string userId, string resetToken)
         {
             StringBuilder mail = new();
             mail.AppendLine("Merhaba<br>Eğer şifre yenileme talebinde bulunduysanız aşağıdaki link üzerinden şifrenizi yenileyebilirsiniz" +
@@ -55,8 +55,14 @@ namespace ETradeStudy.Infrastructure.Services
             mail.AppendLine("\">Yeni şifre talebi için tıklayanız</a></strong><br><br><br><span style=\" font-size:12px;\">Eğer ki bu talep sizin tarafınızdan gerçekleştirilmediyse bu maili ciddiye almayınız</span>" +
                 "<br>Saygılarımızla...<br><br>Mini|E-Ticaret ");
             await SendMailAsync(to, "Şifre Yenileme Talebi", mail.ToString());
-        
+
         }
 
+        public async Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate, string userName)
+        {
+            string mail = $"Sayın {userName}  Merhaba<br> {orderDate} tarihli {orderCode} kodlu siparişiniz kargoya verilmiştir.<br>İyi günlerde kullanınız";
+            await SendMailAsync(to, $"{orderCode} Kodlu Siparişiniz Tamamlandı", mail);
+
+        }
     }
 }
