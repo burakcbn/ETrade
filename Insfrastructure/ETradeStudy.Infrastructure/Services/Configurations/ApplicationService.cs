@@ -27,7 +27,7 @@ namespace ETradeStudy.Infrastructure.Services.Configurations
             {
                 foreach (var controller in controllers)
                 {
-                    var actions = controllers.GetType().GetMethods().Where(m => m.IsDefined(typeof(AuthorizeDefinitionAttribute)));
+                    var actions = controller.GetMethods().Where(m => m.IsDefined(typeof(AuthorizeDefinitionAttribute)));
                     if (actions != null)
                     {
                         foreach (var action in actions)
@@ -38,7 +38,7 @@ namespace ETradeStudy.Infrastructure.Services.Configurations
                                 Menu menu = null;
 
                                 var authorizeDefinitionAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
-                                if (menus.Any(m => m.Name == authorizeDefinitionAttribute.Menu))
+                                if (!menus.Any(m => m.Name == authorizeDefinitionAttribute.Menu))
                                 {
                                     menu = new() { Name = authorizeDefinitionAttribute.Menu };
                                     menus.Add(menu);
