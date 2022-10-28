@@ -1,4 +1,7 @@
 ﻿using ETradeStudy.Application.Abstractions;
+using ETradeStudy.Application.Consts;
+using ETradeStudy.Application.CustomAttributes;
+using ETradeStudy.Application.Enums;
 using ETradeStudy.Application.Features.Commands.Product.CreateProduct;
 using ETradeStudy.Application.Features.Commands.Product.RemoveProduct;
 using ETradeStudy.Application.Features.Commands.Product.UpdateProduct;
@@ -42,6 +45,7 @@ namespace ETradeStudy.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Create Product")]
         public async Task<IActionResult> Add(CreateProductCommandRequest createProductCommandRequest)
         {
             CreateProductCommandResponse createProductCommandResponse = await _mediator.Send(createProductCommandRequest);
@@ -50,6 +54,7 @@ namespace ETradeStudy.API.Controllers
 
         [HttpDelete("{Id}")]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Deleting, Definition = "Delete Product")]
         public async Task<IActionResult> Delete([FromRoute] RemoveProductCommandRequest removeProductCommandRequest)
         {
             await _mediator.Send(removeProductCommandRequest);
@@ -58,6 +63,7 @@ namespace ETradeStudy.API.Controllers
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Updating, Definition = "Update Product")]
         public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest)
         {
             await _mediator.Send(updateProductCommandRequest);
@@ -80,7 +86,6 @@ namespace ETradeStudy.API.Controllers
         //}
 
         [HttpGet("{Id}")]
-        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest getByIdProductQueryRequest)
         {
             GetByIdProductQueryResponse response = await _mediator.Send(getByIdProductQueryRequest);

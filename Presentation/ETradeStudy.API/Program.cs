@@ -47,7 +47,6 @@ Logger log = new LoggerConfiguration()
             {"log_event", new LogEventSerializedColumnWriter()},
             {"user_name", new UsernameColumnWriter()}
         })
-
     .Enrich.FromLogContext()
     .MinimumLevel.Information()
     .CreateLogger();

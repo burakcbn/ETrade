@@ -40,7 +40,6 @@ namespace ETradeStudy.Infrastructure.Services.Token
 
             JwtSecurityTokenHandler tokenHandler = new();
             token.AccessToken = tokenHandler.WriteToken(jwtSecurityToken);
-            //string refreshToken = CreateRefreshToken();
             token.RefreshToken = CreateRefreshToken();
             return token;
         }

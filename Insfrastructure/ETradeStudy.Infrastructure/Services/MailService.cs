@@ -46,7 +46,7 @@ namespace ETradeStudy.Infrastructure.Services
         {
             StringBuilder mail = new();
             mail.AppendLine("Merhaba<br>Eğer şifre yenileme talebinde bulunduysanız aşağıdaki link üzerinden şifrenizi yenileyebilirsiniz" +
-                "<br><strong><a target=\"_blank\" href=\" /");
+                "<br><strong><a target=\"_blank\" href=\" ");
             mail.AppendLine(_configuration["AngularClientUrl"]);
             mail.AppendLine("/update-password/");
             mail.AppendLine(userId);
