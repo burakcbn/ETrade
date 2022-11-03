@@ -11,5 +11,7 @@ namespace ETradeStudy.Application.Consts
         public const string Baskets = "Baskets";
         public const string Orders = "Orders";
         public const string Products = "Products";
+        public const string Authorize = "Authorize";
+        public const string Roles = "Roles";
     }
 }

@@ -78,12 +78,14 @@ namespace ETradeStudy.Percistance
 
             services.AddScoped<IBasketService, BasketService>();
 
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IRoleService, RoleService>();
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();
             services.AddScoped<IExternalAuthentication, AuthService>();
 
-            services.AddScoped<IOrderService, OrderService>();
 
         }
     }
