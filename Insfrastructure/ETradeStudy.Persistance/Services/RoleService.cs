@@ -33,11 +33,19 @@ namespace ETradeStudy.Percistance.Services
 
         public (List<RoleDto>, int) GetAllRoles(int page, int size)
         {
-            return (_roleManager.Roles.Skip(page * size).Take(size).Select(x => new RoleDto()
+            var query = _roleManager.Roles;
+
+            IQueryable<AppRole> rolesQuery = null;
+            if (page == -1 && size == -1)
+                rolesQuery = query;
+            else
+                rolesQuery = query.Skip(page * size).Take(size);
+
+            return (rolesQuery.Select(x => new RoleDto()
             {
                 Id = x.Id,
                 Name = x.Name,
-            }).ToList(), _roleManager.Roles.Count());
+            }).ToList(), query.Count());
         }
 
         public async Task<(string id, string name)> GetRoleById(string id)

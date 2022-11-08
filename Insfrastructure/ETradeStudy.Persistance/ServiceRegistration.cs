@@ -54,6 +54,12 @@ namespace ETradeStudy.Percistance
             services.AddSingleton<IFileRead, FileRead>();
             services.AddSingleton<IFileWrite, FileWrite>();
 
+            services.AddSingleton<IEndpointRead, EndpointRead>();
+            services.AddSingleton<IEndpointWrite, EndpointWrite>();
+
+
+            services.AddSingleton<IMenuRead, MenuRead>();
+            services.AddSingleton<IMenuWrite, MenuWrite>();
 
             services.AddSingleton<IBasketRead, BasketRead>();
             services.AddSingleton<IBasketWrite, BasketWrite>();
@@ -85,6 +91,7 @@ namespace ETradeStudy.Percistance
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();
             services.AddScoped<IExternalAuthentication, AuthService>();
+            services.AddScoped<IAuthorizationEndpointService,AuthorizationEndpointService>();
 
 
         }
