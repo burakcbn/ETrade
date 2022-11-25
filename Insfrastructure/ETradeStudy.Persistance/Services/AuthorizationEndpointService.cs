@@ -5,12 +5,6 @@ using ETradeStudy.Domain.Entities;
 using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ETradeStudy.Percistance.Services
 {
     public class AuthorizationEndpointService : IAuthorizationEndpointService
@@ -49,8 +43,10 @@ namespace ETradeStudy.Percistance.Services
 
             Endpoint? endpoint = await _endpointRead.Table.Include(e => e.Menu).Include(e => e.Roles).FirstOrDefaultAsync(e => e.Code == code && e.Menu.Name == menu);
 
+
             if (endpoint == null)
             {
+
                 var action = _applicationService.GetAuthorizeDefinitionEndpoints(type)
                         .FirstOrDefault(m => m.Name == menu)
                         ?.Actions.FirstOrDefault(e => e.Code == code);
@@ -79,14 +75,15 @@ namespace ETradeStudy.Percistance.Services
 
             await _endpointWrite.SaveAsync();
 
+
         }
 
         public async Task<List<string>> GetRolesToEndpointAsync(string code, string menu)
         {
             Endpoint? endpoint = await _endpointRead.Table
-                  .Include(e => e.Roles)
-                  .Include(e => e.Menu)
-                  .FirstOrDefaultAsync(e => e.Code == code && e.Menu.Name == menu);
+                .Include(e => e.Roles)
+                .Include(e => e.Menu)
+                .FirstOrDefaultAsync(e => e.Code == code && e.Menu.Name == menu);
             if (endpoint != null)
                 return endpoint.Roles.Select(r => r.Name).ToList();
             return null;

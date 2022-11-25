@@ -5,6 +5,7 @@ using ETradeStudy.Application.Exceptions;
 using ETradeStudy.Application.Helpers;
 using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,18 @@ namespace ETradeStudy.Percistance.Services
         {
             _userManager = userManager;
             _mapper = mapper;
+        }
+
+        public async Task AssignRoleToUserAsync(string id, string[] roles)
+        {
+            AppUser appUser = await _userManager.FindByIdAsync(id);
+            if (appUser != null)
+            {
+                var _roles = await _userManager.GetRolesAsync(appUser);
+                IdentityResult result = await _userManager.RemoveFromRolesAsync(appUser, _roles);
+                
+                await _userManager.AddToRolesAsync(appUser, roles);
+            }
         }
 
         public async Task<CreateUserResponse> CreateAsync(CreateUser model)
@@ -45,13 +58,42 @@ namespace ETradeStudy.Percistance.Services
 
         }
 
-        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        public ListUserDto GetAllUsers(int page, int size)
         {
-            AppUser appUser= await _userManager.FindByIdAsync(userId);
+            var query = _userManager.Users;
+            var users = query.Skip(page * size).Take(size).ToList();
+            return new()
+            {
+                Users = users.Select(user => new UserDto()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    NameSurname = user.NameSurname,
+                    TwoFactorEnabled = user.TwoFactorEnabled
+                }).ToList(),
+                Count = query.Count()
+            };
+        }
+
+        public async Task<List<string>> GetRolesToUserAsync(string id)
+        {
+           AppUser appUser= await _userManager.FindByIdAsync(id);
             if (appUser!=null)
             {
-                resetToken= resetToken.UrlDecode();
-                IdentityResult result= await _userManager.ResetPasswordAsync(appUser, resetToken, newPassword);
+              var userRoles=await _userManager.GetRolesAsync(appUser);
+                return userRoles.ToList(); 
+            }
+            return new();
+        }
+
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        {
+            AppUser appUser = await _userManager.FindByIdAsync(userId);
+            if (appUser != null)
+            {
+                resetToken = resetToken.UrlDecode();
+                IdentityResult result = await _userManager.ResetPasswordAsync(appUser, resetToken, newPassword);
                 if (result.Succeeded)
                     await _userManager.UpdateSecurityStampAsync(appUser);
                 else

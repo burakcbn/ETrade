@@ -18,7 +18,7 @@ namespace ETradeStudy.API.Controllers
             _mediator = mediator;
         }
         [HttpPost("get-roles-to-endpoint")]
-        public async Task<IActionResult> GetRolesToEndpoint([FromRoute] GetRolesToEndpointQueryRequest getRolesToEndpointQueryRequest)
+        public async Task<IActionResult> GetRolesToEndpoint( GetRolesToEndpointQueryRequest getRolesToEndpointQueryRequest)
         {
             GetRolesToEndpointQueryResponse response = await _mediator.Send(getRolesToEndpointQueryRequest);
             return Ok(response);
