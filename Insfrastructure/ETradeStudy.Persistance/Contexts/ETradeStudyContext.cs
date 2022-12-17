@@ -42,6 +42,8 @@ namespace ETradeStudy.Percistance.Contexts
             builder.Entity<Order>()
                 .HasIndex(o => o.OrderCode)
                 .IsUnique();
+
+
             builder.Entity<Order>()
                            .HasOne(o => o.CompletedOrder)
                            .WithOne(c => c.Order)

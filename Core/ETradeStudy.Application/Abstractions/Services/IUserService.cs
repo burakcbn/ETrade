@@ -15,6 +15,7 @@ namespace ETradeStudy.Application.Abstractions.Services
         Task UpdatePasswordAsync(string userId, string resetToken,string newPassword);
         ListUserDto GetAllUsers(int page,int size);
         Task AssignRoleToUserAsync(string id, string[] roles);
-        Task<List<string>> GetRolesToUserAsync(string id);
+        Task<List<string>> GetRolesToUserAsync(string idOrUserName);
+        Task<bool> HasRolePermissionToEndpointAsync(string name,string code);
     }
 }

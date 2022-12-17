@@ -3,6 +3,8 @@ using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.DTOs.User;
 using ETradeStudy.Application.Exceptions;
 using ETradeStudy.Application.Helpers;
+using ETradeStudy.Application.Repositories;
+using ETradeStudy.Domain.Entities;
 using ETradeStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +20,12 @@ namespace ETradeStudy.Percistance.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
-        public UserService(UserManager<AppUser> userManager, IMapper mapper)
+        private readonly IEndpointRead _endpointRead;
+        public UserService(UserManager<AppUser> userManager, IMapper mapper, IEndpointRead endpointRead)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _endpointRead = endpointRead;
         }
 
         public async Task AssignRoleToUserAsync(string id, string[] roles)
@@ -31,7 +35,7 @@ namespace ETradeStudy.Percistance.Services
             {
                 var _roles = await _userManager.GetRolesAsync(appUser);
                 IdentityResult result = await _userManager.RemoveFromRolesAsync(appUser, _roles);
-                
+
                 await _userManager.AddToRolesAsync(appUser, roles);
             }
         }
@@ -76,15 +80,41 @@ namespace ETradeStudy.Percistance.Services
             };
         }
 
-        public async Task<List<string>> GetRolesToUserAsync(string id)
+        public async Task<List<string>> GetRolesToUserAsync(string idOrUserName)
         {
-           AppUser appUser= await _userManager.FindByIdAsync(id);
-            if (appUser!=null)
+            AppUser appUser = await _userManager.FindByIdAsync(idOrUserName);
+            if (appUser == null)
+                appUser = await _userManager.FindByNameAsync(idOrUserName);
+            if (appUser != null)
             {
-              var userRoles=await _userManager.GetRolesAsync(appUser);
-                return userRoles.ToList(); 
+                var userRoles = await _userManager.GetRolesAsync(appUser);
+                return userRoles.ToList();
             }
             return new();
+        }
+
+        public async Task<bool> HasRolePermissionToEndpointAsync(string name, string code)
+        {
+            var roles = await GetRolesToUserAsync(name);
+
+            if (!roles.Any())
+                return false;
+
+            Endpoint? endpoint = _endpointRead.Table
+                .Include(e => e.Roles)
+                .FirstOrDefault(e => e.Code == code);
+
+            if (endpoint == null)
+                return false;
+
+            var endpointRoles = endpoint.Roles.Select(r => r.Name);
+
+            foreach (var role in endpointRoles)
+            {
+                if (roles.Contains(role))
+                    return true;
+            }
+            return false;
         }
 
         public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)

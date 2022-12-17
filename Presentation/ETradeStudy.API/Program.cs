@@ -1,6 +1,7 @@
 using ETradeAPI.SignalR;
 using ETradeStudy.API.Configurations.ColumnWriters;
 using ETradeStudy.API.Extensions;
+using ETradeStudy.API.Filters;
 using ETradeStudy.Application;
 using ETradeStudy.Application.Validatiors.Product;
 using ETradeStudy.Infrastructure;
@@ -62,8 +63,12 @@ builder.Services.AddHttpLogging(logging =>
     logging.ResponseBodyLogLimit = 4096;
 });
 
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>()).
-    AddFluentValidation(options => options.
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+    options.Filters.Add<RolePermissionFilter>();
+})
+    .AddFluentValidation(options => options.
     RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).
     ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
