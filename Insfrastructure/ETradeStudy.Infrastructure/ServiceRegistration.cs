@@ -26,6 +26,7 @@ namespace ETradeStudy.Infrastructure
             services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IApplicationService, ApplicationService>();
+            services.AddScoped<IQRCodeService, QRCodeService>();
         }
         public static void AddStorage<T>(this IServiceCollection services) where T : Storage, IStorage
         {

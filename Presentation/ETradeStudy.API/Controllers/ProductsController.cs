@@ -1,4 +1,5 @@
 ﻿using ETradeStudy.Application.Abstractions;
+using ETradeStudy.Application.Abstractions.Services;
 using ETradeStudy.Application.Consts;
 using ETradeStudy.Application.CustomAttributes;
 using ETradeStudy.Application.Enums;
@@ -27,13 +28,15 @@ namespace ETradeStudy.API.Controllers
         readonly ILogger<ProductsController> _logger;
         readonly IStorageService _storageService;
         readonly IProductImageFileWrite _productImageFileWrite;
+        private readonly IProductService _productService;
 
-        public ProductsController(IMediator mediator, ILogger<ProductsController> logger, IStorageService storageService, IProductImageFileWrite productImageFileWrite)
+        public ProductsController(IMediator mediator, ILogger<ProductsController> logger, IStorageService storageService, IProductImageFileWrite productImageFileWrite, IProductService productService)
         {
             _mediator = mediator;
             _logger = logger;
             _storageService = storageService;
             _productImageFileWrite = productImageFileWrite;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -41,6 +44,12 @@ namespace ETradeStudy.API.Controllers
         {
             GetAllProductQueryResponse response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
+        }
+        [HttpGet("qrcode/{productId}")]
+        public async Task<IActionResult> GetQRCodeToProduct([FromRoute] string productId)
+        {
+            var responseByte= await _productService.QRCodeToProductAsync(productId);
+            return File(responseByte,"image/png ");
         }
 
         [HttpPost]
