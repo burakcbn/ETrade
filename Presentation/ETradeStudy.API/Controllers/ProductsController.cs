@@ -4,6 +4,7 @@ using ETradeStudy.Application.Consts;
 using ETradeStudy.Application.CustomAttributes;
 using ETradeStudy.Application.Enums;
 using ETradeStudy.Application.Features.Commands.Product.CreateProduct;
+using ETradeStudy.Application.Features.Commands.Product.ProductUpdateWithQRCode;
 using ETradeStudy.Application.Features.Commands.Product.RemoveProduct;
 using ETradeStudy.Application.Features.Commands.Product.UpdateProduct;
 using ETradeStudy.Application.Features.Queries.Product.GetAllProduct;
@@ -45,11 +46,18 @@ namespace ETradeStudy.API.Controllers
             GetAllProductQueryResponse response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
         }
+
         [HttpGet("qrcode/{productId}")]
         public async Task<IActionResult> GetQRCodeToProduct([FromRoute] string productId)
         {
-            var responseByte= await _productService.QRCodeToProductAsync(productId);
-            return File(responseByte,"image/png ");
+            var responseByte = await _productService.QRCodeToProductAsync(productId);
+            return File(responseByte, "image/png ");
+        }
+        [HttpPut("qrcode-stock-update")]
+        public async Task<IActionResult> ProductUpdateWithQRCode(ProductUpdateWithQRCodeCommandRequest productUpdateWithQRCodeCommandRequest)
+        {
+            ProductUpdateWithQRCodeCommandResponse response = await _mediator.Send(productUpdateWithQRCodeCommandRequest);
+            return Ok(response);
         }
 
         [HttpPost]

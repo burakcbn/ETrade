@@ -9,5 +9,6 @@ namespace ETradeStudy.Application.Abstractions.Services
     public interface IProductService
     {
         Task<byte[]> QRCodeToProductAsync(string productId);
+        Task<bool> ProductUpdateWithQRCodeAsync(string productId, int stock);  
     }
 }
