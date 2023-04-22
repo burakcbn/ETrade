@@ -18,11 +18,13 @@ namespace ETradeStudy.Application.Features.Queries.Product.GetByIdProduct
 
         public async Task<GetByIdProductQueryResponse> Handle(GetByIdProductQueryRequest request, CancellationToken cancellationToken)
         {
-            P.Product product=await _productRead.GetByIdAsync(request.Id);
+            P.Product product = await _productRead.GetByIdAsync(request.Id);
             return new()
             {
-               Price = product.Price,
-               Stock=product.Stock,
+                ProductName = product.ProductName,
+                CategoryId = product.CategoryId.ToString(),
+                Price = product.Price,
+                Stock = product.Stock,
             };
         }
     }

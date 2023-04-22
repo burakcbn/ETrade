@@ -7,9 +7,13 @@ using ETradeStudy.Application.Features.Commands.Product.CreateProduct;
 using ETradeStudy.Application.Features.Commands.Product.ProductUpdateWithQRCode;
 using ETradeStudy.Application.Features.Commands.Product.RemoveProduct;
 using ETradeStudy.Application.Features.Commands.Product.UpdateProduct;
+using ETradeStudy.Application.Features.Queries.Category.GetByIdCategory;
 using ETradeStudy.Application.Features.Queries.Product.GetAllProduct;
+using ETradeStudy.Application.Features.Queries.Product.GetByCategoryProduct;
 using ETradeStudy.Application.Features.Queries.Product.GetByIdProduct;
+using ETradeStudy.Application.Features.Queries.Product.GeyByDynamic;
 using ETradeStudy.Application.Repositories;
+using ETradeStudy.Application.Repositories.Dynamic;
 using ETradeStudy.Application.RequestParams;
 using ETradeStudy.Application.ViewModel;
 using ETradeStudy.Domain.Entities;
@@ -47,6 +51,21 @@ namespace ETradeStudy.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("deneme")]
+        public async Task<IActionResult> GetByDynamic(GetByDynamicQueryRequest getByDynamicQueryRequest)
+        {
+           var response= await _mediator.Send(getByDynamicQueryRequest);
+            return Ok(response);
+        }
+    
+
+        [HttpGet("get-by-categoryId/{CategoryId}")]
+        public async Task<IActionResult> GetByCategoryIdProduct([FromRoute] GetByCategoryIdProductQueryRequest getByCategoryIdProductQueryRequest)
+        {
+            GetByCategoryIdProductQueryResponse response = await _mediator.Send(getByCategoryIdProductQueryRequest);
+            return Ok(response);
+        }
+
         [HttpGet("qrcode/{productId}")]
         public async Task<IActionResult> GetQRCodeToProduct([FromRoute] string productId)
         {
@@ -77,6 +96,12 @@ namespace ETradeStudy.API.Controllers
             await _mediator.Send(removeProductCommandRequest);
             return Ok();
         }
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest getByIdProductQueryRequest)
+        {
+            GetByIdProductQueryResponse response = await _mediator.Send(getByIdProductQueryRequest);
+            return Ok(response);
+        }
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Admin")]
@@ -102,12 +127,7 @@ namespace ETradeStudy.API.Controllers
         //    return Ok();
         //}
 
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> GetById([FromRoute] GetByIdProductQueryRequest getByIdProductQueryRequest)
-        {
-            GetByIdProductQueryResponse response = await _mediator.Send(getByIdProductQueryRequest);
-            return Ok(response);
-        }
+     
 
     }
 }

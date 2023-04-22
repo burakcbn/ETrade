@@ -1,8 +1,10 @@
 ﻿using ETradeStudy.Application.Repositories;
+using ETradeStudy.Application.Repositories.Dynamic;
 using ETradeStudy.Domain.Entities.Common;
 using ETradeStudy.Percistance.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;

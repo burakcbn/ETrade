@@ -1,4 +1,5 @@
 ﻿using ETradeStudy.Application.Repositories;
+using ETradeStudy.Application.Repositories.Dynamic;
 using ETradeStudy.Domain.Entities.Common;
 using ETradeStudy.Percistance.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,13 @@ namespace ETradeStudy.Percistance.Repositories
 
         public DbSet<T> Table => _context.Set<T>();
 
+
+        public IQueryable<T> GetListByDynamic(Dynamic dynamic, bool enableTracking = true)
+        {
+            IQueryable<T> queryable = Table.ToDynamic(dynamic);
+            if (!enableTracking) queryable = queryable.AsNoTracking();
+            return queryable;
+        }
         public IQueryable<T> GetAll(bool isTracking=true)
         {
             var table= Table.AsQueryable();

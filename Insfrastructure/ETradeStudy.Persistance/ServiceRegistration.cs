@@ -9,6 +9,7 @@ using ETradeStudy.Percistance.Contexts;
 using ETradeStudy.Percistance.Repositories;
 using ETradeStudy.Percistance.Repositories.Basket;
 using ETradeStudy.Percistance.Repositories.BasketItem;
+using ETradeStudy.Percistance.Repositories.Category;
 using ETradeStudy.Percistance.Repositories.CompletedOrder;
 using ETradeStudy.Percistance.Repositories.File;
 using ETradeStudy.Percistance.Repositories.ProductImage;
@@ -30,7 +31,7 @@ namespace ETradeStudy.Percistance
         public static void AddPersistanceServices(this IServiceCollection services)
         {
 
-            services.AddDbContext<ETradeStudyContext>(options => options.UseNpgsql(Configuration.ConnectionString), ServiceLifetime.Singleton);
+            services.AddDbContext<ETradeStudyContext>(options => options.UseNpgsql(Configuration.ConnectionString));
             services.AddIdentity<AppUser, AppRole>(options =>
              {
                  options.Password.RequiredLength = 3;
@@ -44,53 +45,35 @@ namespace ETradeStudy.Percistance
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddSingleton<ISupplierRead, SupplierRead>();
-            services.AddSingleton<ISupplierWrite, SupplierWrite>();
-
-            services.AddSingleton<IProductRead, ProductRead>();
-            services.AddSingleton<IProductWrite, ProductWrite>();
-
-
-            services.AddSingleton<IFileRead, FileRead>();
-            services.AddSingleton<IFileWrite, FileWrite>();
-
-            services.AddSingleton<IEndpointRead, EndpointRead>();
-            services.AddSingleton<IEndpointWrite, EndpointWrite>();
-
-
-            services.AddSingleton<IMenuRead, MenuRead>();
-            services.AddSingleton<IMenuWrite, MenuWrite>();
-
-            services.AddSingleton<IBasketRead, BasketRead>();
-            services.AddSingleton<IBasketWrite, BasketWrite>();
-
-
-            services.AddSingleton<ICompletedOrderRead, CompletedOrderRead>();
-            services.AddSingleton<ICompletedOrderWrite, CompletedOrderWrite>();
-
-            services.AddSingleton<IOrderRead, OrderRead>();
-            services.AddSingleton<IOrderWrite, OrderWrite>();
-
-            services.AddSingleton<IBasketItemRead, BasketItemRead>();
-            services.AddSingleton<IBasketItemWrite, BasketItemWrite>();
-
-
-            services.AddSingleton<IProductImageFileRead, ProdutImageFileRead>();
-            services.AddSingleton<IProductImageFileWrite, ProductImageFileWrite>();
-
-
-            services.AddSingleton<IInvoceFileRead, InvoiceFileRead>();
-            services.AddSingleton<IInvoiceFileWrite, InvoiceFileWrite>();
-
+            services.AddScoped<ISupplierRead, SupplierRead>();
+            services.AddScoped<ISupplierWrite, SupplierWrite>();
+            services.AddScoped<IProductRead, ProductRead>();
+            services.AddScoped<IProductWrite, ProductWrite>();
+            services.AddScoped<IFileRead, FileRead>();
+            services.AddScoped<IFileWrite, FileWrite>();
+            services.AddScoped<IEndpointRead, EndpointRead>();
+            services.AddScoped<IEndpointWrite, EndpointWrite>();
+            services.AddScoped<IMenuRead, MenuRead>();
+            services.AddScoped<IMenuWrite, MenuWrite>();
+            services.AddScoped<IBasketRead, BasketRead>();
+            services.AddScoped<IBasketWrite, BasketWrite>();
+            services.AddScoped<ICategoryRead ,CategoryRead>();
+            services.AddScoped<ICategoryWrite, CategoryWrite>();
+            services.AddScoped<ICompletedOrderRead, CompletedOrderRead>();
+            services.AddScoped<ICompletedOrderWrite, CompletedOrderWrite>();
+            services.AddScoped<IOrderRead, OrderRead>();
+            services.AddScoped<IOrderWrite, OrderWrite>();
+            services.AddScoped<IBasketItemRead, BasketItemRead>();
+            services.AddScoped<IBasketItemWrite, BasketItemWrite>();
+            services.AddScoped<IProductImageFileRead, ProdutImageFileRead>();
+            services.AddScoped<IProductImageFileWrite, ProductImageFileWrite>();
+            services.AddScoped<IInvoceFileRead, InvoiceFileRead>();
+            services.AddScoped<IInvoiceFileWrite, InvoiceFileWrite>();
             services.AddScoped<IBasketService, BasketService>();
-
             services.AddScoped<IOrderService, OrderService>();
-            
             services.AddScoped<IRoleService, RoleService>();
-            
             services.AddScoped<IProductService, ProductService>();
-
-
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();

@@ -96,27 +96,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          };
      });
 
-builder.Services.AddSwaggerGen(opt =>
-{
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description =
-            "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345.54321\""
-    });
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-                { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
-            new string[] { }
-        }
-    });
-});
+//builder.services.addswaggergen(opt =>
+//{
+//    opt.addsecuritydefinition("bearer", new openapisecurityscheme
+//    {
+//        name = "authorization",
+//        type = securityschemetype.apikey,
+//        scheme = "bearer",
+//        bearerformat = "jwt",
+//        ýn = parameterlocation.header,
+//        description =
+//            "jwt authorization header using the bearer scheme. \r\n\r\n enter 'bearer' [space] and then your token in the text input below.\r\n\r\nexample: \"bearer 12345.54321\""
+//    });
+//    opt.addsecurityrequirement(new openapisecurityrequirement
+//    {
+//        {
+//            new openapisecurityscheme
+//                { reference = new openapireference { type = referencetype.securityscheme, ýd = "bearer" } },
+//            new string[] { }
+//        }
+//    });
+//});
 
 var app = builder.Build();
 
